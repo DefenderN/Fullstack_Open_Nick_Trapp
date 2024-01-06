@@ -1,0 +1,30 @@
+sequenceDiagram
+    participant browser
+    participant server
+
+Note right of browser: User enters URL
+
+    browser->>server: GET https://studies.cs.helsinki.fi/exampleapp/spa
+    activate server
+    server->>browser: spa HTML file
+    deactivate server
+
+    browser->>server: GET https://studies.cs.helsinki.fi/exampleapp/main.css
+    activate server
+    server->>browser: CSS file
+    deactivate server
+
+    browser->>server: GET https://studies.cs.helsinki.fi/exampleapp/spa.js
+    activate server
+    server->>browser: Javascript file
+    deactivate server
+
+Note right of browser: Browser executes javascript file to fetch JSON data
+
+    browser->>server: GET https://studies.cs.helsinki.fi/exampleapp/data.json
+    activate server
+    server->>browser: JSON data file
+    deactivate server
+
+Note right of browser: Javascript updates the html page to display the notes list
+
