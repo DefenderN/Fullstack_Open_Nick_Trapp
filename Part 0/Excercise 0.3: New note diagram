@@ -1,0 +1,36 @@
+sequenceDiagram
+    participant browser
+    participant server
+
+Note right of browser: User inputs text, User clicks button
+
+    browser->>server: POST https://studies.cs.helsinki.fi/exampleapp/new_note Content: text/html
+    activate server
+    server->>browser:HTTP status code 302: URL redirect to /notes
+    deactivate server
+
+Note left of server: Server accesses the POST Payload and adds the input text to the notes array
+
+    browser->>server: GET https://studies.cs.helsinki.fi/exampleapp/notes
+    activate server 
+    server->>browser: HTML document "notes"
+    deactivate server
+
+Note right of browser: Browser reloads the Notes page
+
+    browser->>server: GET https://studies.cs.helsinki.fi/exampleapp/main.css
+    activate server 
+    server->>browser: the css file
+    deactivate server
+
+    browser->>server: GET https://studies.cs.helsinki.fi/exampleapp/main.js
+    activate server 
+    server->>browser: the JavaScript file
+    deactivate server
+
+    browser->>server: GET https://studies.cs.helsinki.fi/exampleapp/data.json
+    activate server 
+    server->>browser: the JSON file
+    deactivate server
+
+Note right of browser: Javascript file updates the notes list in the browser
