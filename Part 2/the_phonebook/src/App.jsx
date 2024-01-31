@@ -1,5 +1,48 @@
 import { useState } from 'react'
-import PersonEntry from './components/PersonEntry'
+
+const Filter = ({filterString, onChange}) => {
+
+  return (
+    <div>
+        filter shown with <input value={filterString} onChange={onChange}/>
+        </div>
+  )
+}
+
+const PersonForm = ({onSubmit, newName, newNumber, onNameChange, onNumberChange}) => {
+
+  return (
+    <form onSubmit={onSubmit}>
+            <div>
+              name: <input value={newName} onChange={onNameChange}/>
+            </div>
+            <div>
+              number: <input value={newNumber} onChange={onNumberChange}/>
+            </div>
+            <div>
+              <button type="submit">add</button>
+            </div>
+      </form>
+  )
+}
+
+const Persons = ({persons}) => {
+
+  return(
+    <ul>
+        {persons.map(person => 
+          <PersonEntry key={persons.indexOf(person)} person={person} />
+        )}
+    </ul>
+  )
+}
+
+const PersonEntry = ({person}) => {
+  return (
+    <li>{person.name}  {person.number}</li>
+  )
+}
+
 
 const App = () => {
   const [persons, setPersons] = useState([
@@ -66,6 +109,7 @@ const App = () => {
   const handleOnFilterStringChange = (event) => {
     console.log(event.target.value)
     setFilterString(event.target.value)
+
     if (event.target.value === "") {
       setUseFilter(false)
     }
@@ -86,27 +130,16 @@ const App = () => {
 
   return (
     <div>
-      <h2>phonebook </h2>
-        <div>
-        filter shown with <input value={filterString} onChange={handleOnFilterStringChange}/>
-        </div>
-      <form onSubmit={addNameAndNumber}>
-            <div>
-              name: <input value={newName} onChange={handleOnNameChange}/>
-            </div>
-            <div>
-              number: <input value={newNumber} onChange={handleOnNumberChange}/>
-            </div>
-            <div>
-              <button type="submit">add</button>
-            </div>
-      </form>
-      <h2>Numbers</h2>
-      <ul>
-        {personsToShow.map(person => 
-          <PersonEntry key={persons.indexOf(person)} person={person} />
-        )}
-      </ul>
+      <h2>Phonebook</h2>
+      <Filter filterString={filterString} onChange={handleOnFilterStringChange}/>
+      <h3>Add a new Person:</h3>
+      <PersonForm onSubmit={addNameAndNumber} 
+                  newName={newName} 
+                  newNumber={newNumber} 
+                  onNameChange={handleOnNameChange} 
+                  onNumberChange={handleOnNumberChange}/>
+      <h3>Names and numbers:</h3>
+      <Persons persons={personsToShow}/>
     </div>
   )
 }
