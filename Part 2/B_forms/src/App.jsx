@@ -1,10 +1,29 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import axios from 'axios'
 import Note from './components/Note'
 
-const App = (props) => {
-  const [notes, setNotes] = useState(props.notes)
+const App = () => {
+  const [notes, setNotes] = useState([])
   const [newNote, setNewNote] = useState("") 
   const [showAll, setShowAll] = useState(true)
+  console.log("App component is called")
+
+
+  const hook = () => {
+    console.log('effect')
+    axios
+      .get('http://localhost:3001/notes')
+      .then(response => {
+        console.log('promise fulfilled')
+        setNotes(response.data)
+      })
+  }, []
+  // The empty array in useEffect signals to only execute the Effect hook with the
+  // first initialization of the app component and NOT when it is reloaded
+  // e.g. when its samples changed
+  useEffect(hook, [])
+  
+  console.log('render', notes.length, 'notes')
 
   const addNote = (event) => {
     event.preventDefault()
