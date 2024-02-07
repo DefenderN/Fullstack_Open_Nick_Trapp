@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import axios from "axios"
 
 const Filter = ({filterString, onChange}) => {
 
@@ -61,15 +62,25 @@ const App = () => {
   const [filterString, setFilterString] = useState('')
   const [useFilter, setUseFilter] = useState(true)
 
-      // Creates a filtered array where only the persons with the filtered condition are in.
-    // It also ensures that both strings, the filterString and the personName are in lowercase during the comparison
-    // and that whitespaces at the start and end of the input become trimmed off.
-    
-    const personsToShow = persons.filter(
-      (person) => {
-        return person.name.toLowerCase().includes(filterString.trim().toLowerCase())
-        }
-      )
+  useEffect(() => {
+    axios
+    .get('http://localhost:3001/persons')
+    .then(response => {
+      console.log(response)
+      setPersons(response.data)
+    })
+  }, [])
+
+  
+
+  // Creates a filtered array where only the persons with the filtered condition are in.
+  // It also ensures that both strings, the filterString and the personName are in lowercase during the comparison
+  // and that whitespaces at the start and end of the input become trimmed off.
+  const personsToShow = persons.filter(
+    (person) => {
+      return person.name.toLowerCase().includes(filterString.trim().toLowerCase())
+    }
+  )
 
   const addNameAndNumber = (event) => {
     event.preventDefault()
@@ -93,7 +104,7 @@ const App = () => {
     //reset input field
     setNewName("")
     setNewNumber("")
-  }
+    }
   }
 
   const handleOnNameChange = (event) => {
@@ -109,24 +120,17 @@ const App = () => {
   const handleOnFilterStringChange = (event) => {
     console.log(event.target.value)
     setFilterString(event.target.value)
-
     if (event.target.value === "") {
       setUseFilter(false)
     }
     else {
       setUseFilter(true)
     }
-
-
   }
 
   const personNameAlreadyExists = (newPersonName, personsArray) => {
     return personsArray.some((person) => person.name === newPersonName)
   }
-
-  // const personNumberAlreadyExists = (newPersonNumber, personsArray) => {
-  //   return personsArray.some((person) => person.number === newPersonNumber)
-  // }
 
   return (
     <div>

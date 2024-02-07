@@ -17,7 +17,7 @@ const App = () => {
         console.log('promise fulfilled')
         setNotes(response.data)
       })
-  }, []
+  }
   // The empty array in useEffect signals to only execute the Effect hook with the
   // first initialization of the app component and NOT when it is reloaded
   // e.g. when its samples changed
