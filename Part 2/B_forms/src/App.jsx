@@ -30,8 +30,17 @@ const App = () => {
     const noteObject = {
       content: newNote,
       important: Math.random() < 0.5,
-      id: notes.length + 1,
+      
     }
+    // POST new Note to the server and update Notes state with the response from the server
+    // which includes the noteObject we send now being found in response.data
+    // because the notes state changes the UI is updated
+    axios
+    .post('http://localhost:3001/notes', noteObject)
+    .then(response => {
+      setNotes(notes.concat(response.data))
+      setNewNote('')
+    })
   
     setNotes(notes.concat(noteObject))
     setNewNote('')
