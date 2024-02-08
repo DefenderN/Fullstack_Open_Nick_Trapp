@@ -26,13 +26,14 @@ const App = () => {
   console.log('render', notes.length, 'notes')
 
   const addNote = (event) => {
+    // Create new noteObject
     event.preventDefault()
     const noteObject = {
       content: newNote,
       important: Math.random() < 0.5,
       
     }
-    // POST new Note to the server and update Notes state with the response from the server
+    // POST new noteObject to the server and update Notes state with the response from the server
     // which includes the noteObject we send now being found in response.data
     // because the notes state changes the UI is updated
     axios
@@ -42,6 +43,7 @@ const App = () => {
       setNewNote('')
     })
   
+    // Update the notes State of the App component in the browser
     setNotes(notes.concat(noteObject))
     setNewNote('')
   }
@@ -49,6 +51,30 @@ const App = () => {
   const handleNoteChange = (event) => {
     console.log(event.target.value)
     setNewNote(event.target.value)
+  }
+
+  const toggleImportanceOf = (id) => {
+    // The url for the specific note
+    const url = `http://localhost:3001/notes/${id}`
+    // The note that matches the id
+    const note = notes.find(n => n.id === id)
+    //object spread syntax copying and modifying a note.
+    // In this case it inverts the "important" property of the note
+    const changedNote = {...note, important: !note.important}
+
+    //replace the note on the JSON server with the put method
+    axios
+      .put(url, changedNote)
+      .then(response => {
+        // After the server responds, the Notes array is updated
+        // using the .map() function on the existing notes array
+        // Here it compares each note id with the id that got changed and
+        // when it finds the note entry whose id changed, it replaces it with the changedNote
+        // which is accessed by response.data
+        setNotes(notes.map(n => n.id !== id ? n : response.data))
+      })
+
+    console.log(`importance of ${id} needs to be toggled`)
   }
 
   const notesToShow = showAll
@@ -66,7 +92,7 @@ const App = () => {
 
       <ul>
         {notesToShow.map(note => 
-          <Note key={note.id} note={note} />
+          <Note key={note.id} note={note} toggleImportance={() => toggleImportanceOf(note.id)} />
         )}
       </ul>
       <form onSubmit={addNote}>
