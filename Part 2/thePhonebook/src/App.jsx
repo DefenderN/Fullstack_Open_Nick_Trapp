@@ -47,6 +47,8 @@ const App = () => {
   const [newNumber, setNewNumber] = useState("")
   const [filterString, setFilterString] = useState('')
 
+  console.log("App component was called")
+
   useEffect(() => {
     PersonService.getPersonsFromServer()
                  .then(persons => setPersons(persons))
@@ -55,18 +57,41 @@ const App = () => {
   // Creates a filtered array where only the persons with the filtered condition are in.
   // It also ensures that both strings, the filterString and the personName are in lowercase during the comparison
   // and that whitespaces at the start and end of the input become trimmed off.
-  const personsToShow = persons.filter(
+  console.log("This is the personsArray which is to be filtered:", persons)
+  const personsToShow = persons.filter( 
     (person) => {
+      console.log(`A person is filtered: `, person)
       return person.name.toLowerCase().includes(filterString.trim().toLowerCase())
     }
   )
+  console.log("This is the personsToShowArray:", personsToShow)
 
   const addNameAndNumber = (event) => {
     event.preventDefault()
     // Check if name is already in the persons array
     if (personNameAlreadyExists(newName.trim(),persons)){
-    console.log(newName, "already exists in persons array") 
-    alert(`${newName} already exists in the phonebook`)
+      console.log(newName, "already exists in persons array")
+      // Ask user to confirm number replacement 
+      if (window.confirm(`${newName} is already added to the phonebook. Do you want to replace the old number with the new one?`)) {
+        
+        //Find person object to be updated
+        const existingPerson = persons.find(person => person.name === newName.trim())
+
+        //Create updated Person object containing the new number
+        const updatedPerson = {...existingPerson, number : newNumber.trim()}
+    
+        //Update the database with the updatedPerson
+        PersonService.updatePerson(updatedPerson)
+                     .then(updatedPerson => {
+                        //Replace the old person with the new one from the response and update the Persons state
+                        setPersons(persons.map(person => {
+                          return person.id === updatedPerson.id ? updatedPerson : person
+                      }))
+                      //reset input fields
+                      setNewName("")
+                      setNewNumber("")
+                     })
+      }
     }
     else {
       console.log(newName, "will be added to the persons array")
@@ -76,7 +101,7 @@ const App = () => {
         number: newNumber.trim()
       }
 
-      //TODO: Add newPersonObject to the server and concat the returned PersonObject
+      //Add newPersonObject to the server and concat the returned PersonObject
       // from the promise down below
       PersonService.addPersonToServer(newPersonObject)
                    .then(addedPerson => {
