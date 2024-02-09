@@ -50,7 +50,6 @@ const App = () => {
   const [newName, setNewName] = useState("")
   const [newNumber, setNewNumber] = useState("")
   const [filterString, setFilterString] = useState('')
-  const [useFilter, setUseFilter] = useState(true)
 
   useEffect(() => {
     axios
@@ -110,12 +109,6 @@ const App = () => {
   const handleOnFilterStringChange = (event) => {
     console.log(event.target.value)
     setFilterString(event.target.value)
-    if (event.target.value === "") {
-      setUseFilter(false)
-    }
-    else {
-      setUseFilter(true)
-    }
   }
 
   const personNameAlreadyExists = (newPersonName, personsArray) => {
