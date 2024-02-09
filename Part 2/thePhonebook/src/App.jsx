@@ -50,8 +50,6 @@ const App = () => {
   const [newNumber, setNewNumber] = useState("")
   const [filterString, setFilterString] = useState('')
 
-  const baseUrl = 'http://localhost:3001/persons'
-
   useEffect(() => {
     PersonService.getPersonsFromServer()
                  .then(persons => setPersons(persons))
