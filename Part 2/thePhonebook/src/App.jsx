@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react'
 import axios from "axios"
 
 const Filter = ({filterString, onChange}) => {
-
   return (
     <div>
         filter shown with <input value={filterString} onChange={onChange}/>
@@ -11,7 +10,6 @@ const Filter = ({filterString, onChange}) => {
 }
 
 const PersonForm = ({onSubmit, newName, newNumber, onNameChange, onNumberChange}) => {
-
   return (
     <form onSubmit={onSubmit}>
             <div>
@@ -28,7 +26,6 @@ const PersonForm = ({onSubmit, newName, newNumber, onNameChange, onNumberChange}
 }
 
 const Persons = ({persons}) => {
-
   return(
     <ul>
         {persons.map(person => 
