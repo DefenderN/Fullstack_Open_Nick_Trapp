@@ -48,9 +48,11 @@ const App = () => {
   const [newNumber, setNewNumber] = useState("")
   const [filterString, setFilterString] = useState('')
 
+  const baseUrl = 'http://localhost:3001/persons'
+
   useEffect(() => {
     axios
-    .get('http://localhost:3001/persons')
+    .get(baseUrl)
     .then(response => {
       console.log(response)
       setPersons(response.data)
@@ -75,21 +77,23 @@ const App = () => {
     console.log(newName, "already exists in persons array") 
     alert(`${newName} already exists in the phonebook`)
     }
-    // Check if the same number is already in the persons array
-    // else if (personNumberAlreadyExists(newNumber.trim(),persons)){
-    // alert(`${newNumber} already exists in the phonebook`)
-    // }
     else {
-    console.log(newName, "will be added to the persons array")
-    // Create and add new person object
-    const newPersonObject = {
-      name : newName.trim(),
-      number: newNumber.trim()
-    }
-    setPersons(persons.concat(newPersonObject))
-    //reset input field
-    setNewName("")
-    setNewNumber("")
+      console.log(newName, "will be added to the persons array")
+      // Create and add new person object
+      const newPersonObject = {
+        name : newName.trim(),
+        number: newNumber.trim()
+      }
+
+      //TODO: Add newPersonObject to the server and concat the returned PersonObject
+      // from the promise down below
+      axios.post(baseUrl, newPersonObject)
+           .then(promise => {
+            setPersons(persons.concat(promise.data))
+            //reset input field
+            setNewName("")
+            setNewNumber("")
+            })
     }
   }
 
