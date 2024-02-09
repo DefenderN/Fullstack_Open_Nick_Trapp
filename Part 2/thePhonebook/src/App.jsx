@@ -27,19 +27,18 @@ const PersonForm = ({onSubmit, newName, newNumber, onNameChange, onNumberChange}
   )
 }
 
-const Persons = ({persons}) => {
+const PersonList = ({persons, onRemovePerson}) => {
   return(
     <ul>
         {persons.map(person => 
-          <PersonEntry key={persons.indexOf(person)} person={person} />
+
+          // <PersonEntry key={persons.indexOf(person)} person={person} onRemove={onRemovePerson} />
+          <li key={persons.indexOf(person)}> 
+            {person.name}  {person.number}   
+            <button onClick={onRemovePerson}>Delete</button>
+            </li>
         )}
     </ul>
-  )
-}
-
-const PersonEntry = ({person}) => {
-  return (
-    <li>{person.name}  {person.number}</li>
   )
 }
 
@@ -121,7 +120,7 @@ const App = () => {
                   onNameChange={handleOnNameChange} 
                   onNumberChange={handleOnNumberChange}/>
       <h3>Names and numbers:</h3>
-      <Persons persons={personsToShow}/>
+      <PersonList persons={personsToShow}/>
     </div>
   )
 }
