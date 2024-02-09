@@ -24,9 +24,19 @@ const addPersonToServer = (person) => {
 
 }
 
+/**
+ * This function removes a person from the server database and returns the deleted person
+ * when successful.
+ */
+const removePersonFromServer = (person) =>{
+    return axios.delete(`${baseUrl}/${person.id}`)
+                .then(response => response.data)
+}
+
 export default {
     getPersonsFromServer,
-    addPersonToServer
+    addPersonToServer,
+    removePersonFromServer
 }
 
 

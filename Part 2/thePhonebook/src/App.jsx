@@ -31,12 +31,10 @@ const PersonList = ({persons, onRemovePerson}) => {
   return(
     <ul>
         {persons.map(person => 
-
-          // <PersonEntry key={persons.indexOf(person)} person={person} onRemove={onRemovePerson} />
           <li key={persons.indexOf(person)}> 
-            {person.name}  {person.number}   
-            <button onClick={onRemovePerson}>Delete</button>
-            </li>
+          {person.name}  {person.number}   
+          <button onClick={() => onRemovePerson(person.id)}>Delete</button>
+         </li>
         )}
     </ul>
   )
@@ -105,6 +103,22 @@ const App = () => {
     setFilterString(event.target.value)
   }
 
+  const handleOnRemovePerson = (id) => {
+    // Find the person which is to be removed
+    const person = persons.find(person => person.id === id)
+
+    // Ask user for confirmation to remove the person
+   if (window.confirm(`Delete ${person.name}`)) {
+    // Delete user from server database after positive confirmation by the user
+     PersonService.removePersonFromServer(person)
+                  .then(removedPerson => {
+    // Remove deleted user from the PersonsArray, which updates the user interface
+                    setPersons(persons.filter(person => person.id !== removedPerson.id))
+                    console.log(`Person ${removedPerson.name} with ID ${removedPerson.id} was removed from database`)
+                  })
+     }
+  }
+
   const personNameAlreadyExists = (newPersonName, personsArray) => {
     return personsArray.some((person) => person.name === newPersonName)
   }
@@ -120,7 +134,7 @@ const App = () => {
                   onNameChange={handleOnNameChange} 
                   onNumberChange={handleOnNumberChange}/>
       <h3>Names and numbers:</h3>
-      <PersonList persons={personsToShow}/>
+      <PersonList persons={personsToShow} onRemovePerson={handleOnRemovePerson}/>
     </div>
   )
 }
