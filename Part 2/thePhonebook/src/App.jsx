@@ -46,17 +46,7 @@ const PersonEntry = ({person}) => {
 
 
 const App = () => {
-  const [persons, setPersons] = useState([
-    { name: 'Heiko',
-      number: '+4915736273814' },
-    { name: "James",
-      number: "+12345"},
-    { name: 'Jona',
-    number: '+4915736273814' },
-    { name: 'Ebersberg',
-    number: '+4915736273814' },
-  ]) 
-  
+  const [persons, setPersons] = useState([]) 
   const [newName, setNewName] = useState("")
   const [newNumber, setNewNumber] = useState("")
   const [filterString, setFilterString] = useState('')
