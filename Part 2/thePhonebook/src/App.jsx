@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react'
 import axios from "axios"
+import PersonService from './services/PersonService'
+
 
 const Filter = ({filterString, onChange}) => {
   return (
@@ -51,15 +53,9 @@ const App = () => {
   const baseUrl = 'http://localhost:3001/persons'
 
   useEffect(() => {
-    axios
-    .get(baseUrl)
-    .then(response => {
-      console.log(response)
-      setPersons(response.data)
-    })
+    PersonService.getPersonsFromServer()
+                 .then(persons => setPersons(persons))
   }, [])
-
-  
 
   // Creates a filtered array where only the persons with the filtered condition are in.
   // It also ensures that both strings, the filterString and the personName are in lowercase during the comparison
@@ -87,13 +83,13 @@ const App = () => {
 
       //TODO: Add newPersonObject to the server and concat the returned PersonObject
       // from the promise down below
-      axios.post(baseUrl, newPersonObject)
-           .then(promise => {
-            setPersons(persons.concat(promise.data))
-            //reset input field
-            setNewName("")
-            setNewNumber("")
-            })
+      PersonService.addPersonToServer(newPersonObject)
+                   .then(addedPerson => {
+                      setPersons(persons.concat(addedPerson))
+                      //reset input field
+                      setNewName("")
+                      setNewNumber("")
+                    })
     }
   }
 
