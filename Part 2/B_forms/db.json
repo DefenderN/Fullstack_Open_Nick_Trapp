@@ -16,7 +16,7 @@
       "important": true
     },
     {
-      "id": 4,
+      "id": "4",
       "content": "Hello Peter",
       "important": false
     },
@@ -29,6 +29,26 @@
       "id": "81f0",
       "content": "Oh no",
       "important": false
+    },
+    {
+      "id": "b662",
+      "content": "Peter",
+      "important": false
+    },
+    {
+      "id": "fdc6",
+      "content": "adolf",
+      "important": false
+    },
+    {
+      "id": "5b78",
+      "content": "ho",
+      "important": true
+    },
+    {
+      "id": "1748",
+      "content": "yooooooo",
+      "important": true
     }
   ]
 }

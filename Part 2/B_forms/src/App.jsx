@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios'
 import Note from './components/Note'
+import noteService from './services/noteService'
 
 const App = () => {
   const [notes, setNotes] = useState([])
@@ -11,11 +12,10 @@ const App = () => {
 
   const hook = () => {
     console.log('effect')
-    axios
-      .get('http://localhost:3001/notes')
-      .then(response => {
-        console.log('promise fulfilled')
-        setNotes(response.data)
+    noteService.getAll()
+               .then(allNotes => {
+                 console.log('promise fulfilled')
+                 setNotes(allNotes)
       })
   }
   // The empty array in useEffect signals to only execute the Effect hook with the
@@ -31,21 +31,17 @@ const App = () => {
     const noteObject = {
       content: newNote,
       important: Math.random() < 0.5,
-      
     }
+    console.log("noteObject to add is:", noteObject)
     // POST new noteObject to the server and update Notes state with the response from the server
     // which includes the noteObject we send now being found in response.data
     // because the notes state changes the UI is updated
-    axios
-    .post('http://localhost:3001/notes', noteObject)
-    .then(response => {
-      setNotes(notes.concat(response.data))
-      setNewNote('')
+    noteService.create(noteObject)
+               .then(returnedNote => {
+                 console.log(returnedNote)
+                 setNotes(notes.concat(returnedNote))
+                 setNewNote('')
     })
-  
-    // Update the notes State of the App component in the browser
-    setNotes(notes.concat(noteObject))
-    setNewNote('')
   }
 
   const handleNoteChange = (event) => {
@@ -54,25 +50,30 @@ const App = () => {
   }
 
   const toggleImportanceOf = (id) => {
-    // The url for the specific note
-    const url = `http://localhost:3001/notes/${id}`
-    // The note that matches the id
+
+    // Find the note that matches the id
     const note = notes.find(n => n.id === id)
+
     //object spread syntax copying and modifying a note.
     // In this case it inverts the "important" property of the note
     const changedNote = {...note, important: !note.important}
 
-    //replace the note on the JSON server with the put method
-    axios
-      .put(url, changedNote)
-      .then(response => {
-        // After the server responds, the Notes array is updated
-        // using the .map() function on the existing notes array
-        // Here it compares each note id with the id that got changed and
-        // when it finds the note entry whose id changed, it replaces it with the changedNote
-        // which is accessed by response.data
-        setNotes(notes.map(n => n.id !== id ? n : response.data))
-      })
+    //replace the note on the JSON server 
+    noteService.update(id, changedNote)
+               .then(returnedNote => {
+                 // After the server responds, the Notes array is updated
+                 // using the .map() function on the existing notes array
+                 // Here it compares each note id with the id that got changed and
+                 // when it finds the note entry whose id changed, it replaces it with the changedNote
+                 // which is accessed by response.data
+                 setNotes(notes.map(n => n.id !== id ? n : returnedNote))
+                })
+               .catch(error => {
+                   alert(
+                    `the note '${note.content}' was already deleted from server`
+                   )
+                  setNotes(notes.filter(n => n.id !== id))
+                })
 
     console.log(`importance of ${id} needs to be toggled`)
   }
