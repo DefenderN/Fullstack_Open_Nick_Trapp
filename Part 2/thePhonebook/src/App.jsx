@@ -67,13 +67,16 @@ const PersonList = ({persons, onRemovePerson}) => {
 
 
 const App = () => {
+
+  const defaultNotification = {message:null,isPositive:true}
+
   const [persons, setPersons] = useState([]) 
   const [newName, setNewName] = useState("")
   const [newNumber, setNewNumber] = useState("")
   const [filterString, setFilterString] = useState('')
-  const [notification, setNotification] = useState({   message: null,
-                                                    isPositive: true})
+  const [notification, setNotification] = useState(defaultNotification)
 
+  
   console.log("App component was called")
 
   useEffect(() => {
@@ -122,9 +125,16 @@ const App = () => {
                                         isPositive:true})
                                         // Reset the Notification after 5 seconds so that it disappears
                       setTimeout(() => {
-                        setNotification({message: null, isPositive:true})
+                        setNotification(defaultNotification)
                       }, 5000)
                      })
+                     .catch(error=> {
+                      setNotification({message: `Information of ${newName} has already been removed from server`,
+                                    isPositive:false})
+                      setTimeout(() => {
+                        setNotification(defaultNotification)
+                      }, 5000)
+                    })
 
       }
     }
@@ -149,7 +159,14 @@ const App = () => {
                       isPositive:true})
                       // Reset the Notification after 5 seconds so that it disappears
                       setTimeout(() => {
-                        setNotification({message: null, isPositive:true})
+                        setNotification(defaultNotification)
+                      }, 5000)
+                    })
+                    .catch(error=> {
+                      setNotification({message: `${newName} could not be added to the server`,
+                                    isPositive:false})
+                      setTimeout(() => {
+                        setNotification(defaultNotification)
                       }, 5000)
                     })
     }
@@ -182,6 +199,13 @@ const App = () => {
     // Remove deleted user from the PersonsArray, which updates the user interface
                     setPersons(persons.filter(person => person.id !== removedPerson.id))
                     console.log(`Person ${removedPerson.name} with ID ${removedPerson.id} was removed from database`)
+                  })
+                  .catch(error=> {
+                    setNotification({message: `Information of ${person.name} has already been removed from server`,
+                                  isPositive:false})
+                    setTimeout(() => {
+                      setNotification(defaultNotification)
+                    }, 5000)
                   })
      }
   }
