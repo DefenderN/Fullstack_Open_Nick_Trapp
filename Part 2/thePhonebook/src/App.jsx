@@ -1,6 +1,31 @@
 import { useState, useEffect } from 'react'
-import axios from "axios"
 import PersonService from './services/PersonService'
+
+
+/**
+ * A Notification component that shows a message for a few
+ * seconds on the screen e.g. confirming the addition of a person to
+ * the phonebook.
+ */
+const Notification = ({notification}) => {
+  console.log(notification.message)
+  console.log(notification.isPositive)
+
+  // Verify if the Notification is positive or negative
+  const color = notification.isPositive?"green":"red"
+
+  // Do not show the Notification if there is no message
+  if (notification.message === null){
+    return null
+  }
+
+  return (
+    <div className="Notification"
+         style={{color:color}}>
+      {notification.message}
+    </div>
+  )  
+}
 
 
 const Filter = ({filterString, onChange}) => {
@@ -46,6 +71,8 @@ const App = () => {
   const [newName, setNewName] = useState("")
   const [newNumber, setNewNumber] = useState("")
   const [filterString, setFilterString] = useState('')
+  const [notification, setNotification] = useState({   message: null,
+                                                    isPositive: true})
 
   console.log("App component was called")
 
@@ -74,23 +101,31 @@ const App = () => {
       // Ask user to confirm number replacement 
       if (window.confirm(`${newName} is already added to the phonebook. Do you want to replace the old number with the new one?`)) {
         
-        //Find person object to be updated
+        // Find person object to be updated
         const existingPerson = persons.find(person => person.name === newName.trim())
 
-        //Create updated Person object containing the new number
+        // Create updated Person object containing the new number
         const updatedPerson = {...existingPerson, number : newNumber.trim()}
     
-        //Update the database with the updatedPerson
+        // Update the database with the updatedPerson
         PersonService.updatePerson(updatedPerson)
                      .then(updatedPerson => {
-                        //Replace the old person with the new one from the response and update the Persons state
+                        // Replace the old person with the new one from the response and update the Persons state
                         setPersons(persons.map(person => {
                           return person.id === updatedPerson.id ? updatedPerson : person
                       }))
-                      //reset input fields
+                      // reset input fields
                       setNewName("")
                       setNewNumber("")
+                      // Update notification that the persons number was updated.
+                      setNotification({message:`Updated ${updatedPerson.name}s number`,
+                                        isPositive:true})
+                                        // Reset the Notification after 5 seconds so that it disappears
+                      setTimeout(() => {
+                        setNotification({message: null, isPositive:true})
+                      }, 5000)
                      })
+
       }
     }
     else {
@@ -109,6 +144,13 @@ const App = () => {
                       //reset input field
                       setNewName("")
                       setNewNumber("")
+                      // Update notification that the person was added to the db.
+                      setNotification({message:`Added ${addedPerson.name}s number`,
+                      isPositive:true})
+                      // Reset the Notification after 5 seconds so that it disappears
+                      setTimeout(() => {
+                        setNotification({message: null, isPositive:true})
+                      }, 5000)
                     })
     }
   }
@@ -151,6 +193,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification notification={notification}></Notification>
       <Filter filterString={filterString} onChange={handleOnFilterStringChange}/>
       <h3>Add a new Person:</h3>
       <PersonForm onSubmit={addNameAndNumber} 
