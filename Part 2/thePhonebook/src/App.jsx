@@ -90,7 +90,6 @@ const App = () => {
   console.log("This is the personsArray which is to be filtered:", persons)
   const personsToShow = persons.filter( 
     (person) => {
-      console.log(`A person is filtered: `, person)
       return person.name.toLowerCase().includes(filterString.trim().toLowerCase())
     }
   )
@@ -106,10 +105,10 @@ const App = () => {
         
         // Find person object to be updated
         const existingPerson = persons.find(person => person.name === newName.trim())
-
+        console.log("existingPerson to be updated is:", existingPerson)
         // Create updated Person object containing the new number
         const updatedPerson = {...existingPerson, number : newNumber.trim()}
-    
+        console.log("updatedPerson is:", updatedPerson)
         // Update the database with the updatedPerson
         PersonService.updatePerson(updatedPerson)
                      .then(updatedPerson => {
@@ -129,6 +128,7 @@ const App = () => {
                       }, 5000)
                      })
                      .catch(error=> {
+                      console.log("An error has ocurred while trying to update a persons data:",error)
                       setNotification({message: `Information of ${newName} has already been removed from server`,
                                     isPositive:false})
                       setTimeout(() => {
@@ -195,10 +195,12 @@ const App = () => {
    if (window.confirm(`Delete ${person.name}`)) {
     // Delete user from server database after positive confirmation by the user
      PersonService.removePersonFromServer(person)
-                  .then(removedPerson => {
+                  .then((servermessage) => {
     // Remove deleted user from the PersonsArray, which updates the user interface
-                    setPersons(persons.filter(person => person.id !== removedPerson.id))
-                    console.log(`Person ${removedPerson.name} with ID ${removedPerson.id} was removed from database`)
+                    console.log("Server message:",servermessage)
+                    console.log("Person array before deletion is:", persons)
+                    setPersons(persons.filter(personEntry => personEntry.id !== person.id))
+                    console.log("Person data to be removed is:", person)
                   })
                   .catch(error=> {
                     setNotification({message: `Information of ${person.name} has already been removed from server`,
