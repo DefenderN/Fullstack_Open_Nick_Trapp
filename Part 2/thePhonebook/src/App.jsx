@@ -129,7 +129,7 @@ const App = () => {
                      })
                      .catch(error=> {
                       console.log("An error has ocurred while trying to update a persons data:",error)
-                      setNotification({message: `Information of ${newName} has already been removed from server`,
+                      setNotification({message: `An error has ocurred while trying to update the data of ${newName}.`,
                                     isPositive:false})
                       setTimeout(() => {
                         setNotification(defaultNotification)
