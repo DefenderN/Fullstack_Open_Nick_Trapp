@@ -163,8 +163,9 @@ const App = () => {
                       }, 5000)
                     })
                     .catch(error=> {
-                      setNotification({message: `${newName} could not be added to the server`,
-                                    isPositive:false})
+                      //setNotification({message: `${newName} could not be added to the server`,
+                      //              isPositive:false})
+                      setNotification({message: error.response.data.error, isPositive: false})
                       setTimeout(() => {
                         setNotification(defaultNotification)
                       }, 5000)
